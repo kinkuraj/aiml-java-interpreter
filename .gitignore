@@ -18,7 +18,7 @@ aiml-java-interpreter.iws
 /build/
 /app-core/app-core.iml
 /app-core/build
-/app-core/build/
 /app-core/target/
 /app-core/log/
 /log/
+/aiml-core/target/

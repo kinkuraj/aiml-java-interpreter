@@ -18,3 +18,5 @@ include 'services:webservice'
 
 rootProject.name = 'aiml-java-interpreter'
 include ':app-core'
+include ':aiml-core'
+

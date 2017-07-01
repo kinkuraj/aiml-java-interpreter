@@ -1,74 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <!--targetNamespace="https://aimlang.org/schemas/aiml-2.0.xsd"-->
+    <!--xmlns="https://aimlang.org/schemas/aiml-2.0.xsd"-->
 
-    <xs:complexType name="templateType">
-        <xs:annotation>
-            <xs:documentation>That tag</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="botType">
-        <xs:annotation>
-            <xs:documentation>Bot tag</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="word" type="xs:string"/>
-            <xs:element name="name" type="xs:string"/>
-        </xs:sequence>
-        <xs:attribute name="name"/>
-    </xs:complexType>
-
-    <xs:complexType name="setType">
-        <xs:annotation>
-            <xs:documentation>Set tag</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="word" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:simpleType name="wildcardType">
-        <xs:restriction base="xs:token">
-            <xs:enumeration value="^"/>
-            <xs:enumeration value="*"/>
-            <xs:enumeration value="#"/>
-            <xs:enumeration value="_"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:complexType name="patternType">
-        <xs:annotation>
-            <xs:documentation>Category of received question</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="word" type="xs:string"/>
-            <xs:element name="priorityWord">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:whiteSpace value="collapse"/>
-                        <xs:pattern value="$*"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element name="wildcard" type="wildcardType"/>
-            <xs:element name="set" type="setType"/>
-            <xs:element name="botProperty" type="botType"/>
-        </xs:sequence>
-        <xs:simpleContent>
-            <xs:extension base="xs:string"/>
-        </xs:simpleContent>
-    </xs:complexType>
-
-    <xs:simpleType name="topicNameType">
-        <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-            <xs:maxLength value="10240"/>
-            <xs:whiteSpace value="collapse"/>
-        </xs:restriction>
-    </xs:simpleType>
+    <xs:element name="aiml">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>AIML root element</xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="category" type="categoryType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="topic" type="topicType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="version" type="versionType" use="optional" default="2.0"/>
+        </xs:complexType>
+    </xs:element>
 
     <xs:simpleType name="versionType">
         <xs:restriction base="xs:token">
@@ -79,15 +27,70 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="categoryType">
+    <xs:complexType name="tagWithName" mixed="true">
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="starType" mixed="true">
+        <xs:attribute name="index" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="templateType" mixed="true">
+        <xs:annotation>
+            <xs:documentation>That tag</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="random" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="li" type="templateType" minOccurs="1" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="bot" type="tagWithName" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="think" type="templateType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="get" minOccurs="0" maxOccurs="unbounded">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="set" type="tagWithName" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="map" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="star" type="starType"/>
+                    </xs:sequence>
+                    <xs:attribute name="name" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="star" type="starType" minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+            <xs:element name="srai" minOccurs="0" maxOccurs="unbounded">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <!--<xs:any minOccurs="0"/>-->
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patternType" mixed="true">
         <xs:annotation>
             <xs:documentation>Category of received question</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="pattern" type="patternType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="that" type="patternType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="topic" type="patternType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="template" type="templateType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="set" minOccurs="0" maxOccurs="unbounded">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="bot" type="tagWithName" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -98,21 +101,19 @@
         <xs:sequence>
             <xs:element name="category" type="categoryType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" type="topicNameType"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="aimlType">
+    <xs:complexType name="categoryType">
         <xs:annotation>
-            <xs:documentation>AIML root element</xs:documentation>
+            <xs:documentation>Category of received question</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="category" type="categoryType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="topic" type="topicType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="pattern" type="patternType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="that" type="patternType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="topic" type="patternType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="template" type="templateType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="version" type="versionType"/>
     </xs:complexType>
-
-    <xs:element name="aiml" type="aimlType"/>
-
 </xs:schema>
 
