@@ -10,15 +10,17 @@ import java.util.List;
  * @since 01/07/17
  */
 public class Topic implements Tag<Category> {
+    public static final Topic DEFAULT = new Topic(null);
+
     private final String name;
-    private List<Category> categories = new ArrayList<>();
+    private List<Category> categories;
 
     public Topic(String name) {
-        this.name = name;
+        this(name, new ArrayList<>());
     }
 
     public Topic(String name, List<Category> categories) {
-        this(name);
+        this.name = name;
         this.categories = categories;
     }
 
@@ -29,6 +31,11 @@ public class Topic implements Tag<Category> {
 
     @Override
     public List<Category> getChilds() {
+        return categories;
+    }
+
+    public List<Category> add(Category category) {
+        categories.add(category);
         return categories;
     }
 }

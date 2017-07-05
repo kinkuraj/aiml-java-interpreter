@@ -39,6 +39,10 @@ allprojects {
 
 configure(project(':aiml-core')) {
     group = 'org.aimlang.core'
+
+    dependencies {
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+    }
 }
 
 configure(project(':app-core')) {

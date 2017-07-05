@@ -11,6 +11,10 @@ import java.util.List;
 public interface Tag<E extends Lexeme> extends Lexeme<List<E>> {
     TagType getType();
 
+    default String getTagName() {
+        return getType().name();
+    }
+
     default List<E> getValue() {
         return getChilds();
     }

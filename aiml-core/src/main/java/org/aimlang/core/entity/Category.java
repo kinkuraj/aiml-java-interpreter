@@ -24,4 +24,36 @@ public class Category implements Tag<Tag> {
     public List<Tag> getChilds() {
         return Arrays.asList(pattern, template, that, topic);
     }
+
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(Pattern pattern) {
+        this.pattern = pattern;
+    }
+
+    public Template getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(Template template) {
+        this.template = template;
+    }
+
+    public That getThat() {
+        return that;
+    }
+
+    public void setThat(That that) {
+        this.that = that;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
 }
