@@ -19,10 +19,6 @@ ext {
     springBootVersion = '1.5.3.RELEASE'
 }
 
-dependencies {
-    testCompile "junit:junit:$junitVersion"
-}
-
 allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
@@ -35,6 +31,9 @@ allprojects {
         mavenCentral()
     }
 
+    dependencies {
+        testCompile "junit:junit:$junitVersion"
+    }
 }
 
 configure(project(':aiml-core')) {
